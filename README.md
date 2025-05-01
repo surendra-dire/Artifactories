@@ -50,6 +50,11 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
           ARTIFACTORY_PATH="calculator-local/test/com/${DATE}-${COMMIT_ID}/"
           echo "Uploading to: $ARTIFACTORY_PATH"
           jf rt upload "target/*.jar" "$ARTIFACTORY_PATH" --flat=true
+
+      # or simply
+      # - name: Upload JAR to Artifactory
+          #   run: |
+          #     jf rt upload "target/*.jar" "calculator-local/test/com/"
 ```
 
 # Upload artifacts from Jenkins pileline  
