@@ -1,22 +1,23 @@
-# jfrog-nexus
+#Artifactory & scanning 
+##Jfrog vs Nexus vs Trivy
 
-# Upload artifacts from debian based machine into jfrog using jfrog cli.  
+# jfrog cli - upload artifacts
 Pre-condition : project and the repository is created in jfrog.  
 
-Install jfrog CLI:  
+**Install jfrog CLI:** 
 ```
 curl -fL https://getcli.jfrog.io | sh  
 sudo mv jfrog /usr/local/bin  
 jfrog --version
 ```
-Configure jfrog server:  
+**Configure jfrog server:** 
 Add a new JFrog CLI configuration named my-server that connects to the Artifactory URL using access token  
 ```
 sudo jfrog config add my-server  --url=<jfrog url> --access-token= <jfrog access token>  
 Ex:   
 jfrog config add my-server  --url=https://triale6ujpm.jfrog.io/  --access-token=eyJ2ZXIiOiI  
 ```
-Upload artifacts:  
+**Upload artifacts:**  
 ```
 jfrog rt u <"Jar file"> <Repo-name>  
 Ex:  
@@ -27,7 +28,7 @@ Verify file uploaded:
 jfrog rt s <repo>-name>/<artifact-name>  
 jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
 ```
-# Upload artifacts from GitHub Actions pipeline  
+# GitHub Actions pipeline - Upload artifacts 
 1. Jfrog: Create project--> Repository --> permissions
 2. Install and configure the JFrog CLI
 3. Upload jar/war to Artifactory
@@ -58,7 +59,7 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
           #     jf rt upload "target/*.jar" "calculator-local/test/com/"
 ```
 
-# Upload artifacts from Jenkins pileline  
+# Jenkins pipeline - Upload artifacts 
 
 
 
