@@ -7,7 +7,7 @@ Install jfrog CLI:
 ```
 curl -fL https://getcli.jfrog.io | sh  
 sudo mv jfrog /usr/local/bin  
-sudo mv jfrog /usr/local/bin  
+jfrog --version
 ```
 Configure jfrog server:  
 Add a new JFrog CLI configuration named my-server that connects to the Artifactory URL using access token  
