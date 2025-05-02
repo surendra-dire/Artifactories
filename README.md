@@ -59,3 +59,42 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
 ```
 
 # Upload artifacts from Jenkins pileline  
+
+
+
+# Jfrog vs Nexus
+
+## 🔄 JFrog Artifactory vs Sonatype Nexus – Key Differences
+
+| # | Category                      | JFrog Artifactory                                                                 | Sonatype Nexus Repository                                             |
+|---|-------------------------------|-----------------------------------------------------------------------------------|----------------------------------------------------------------------|
+| 1 | 🔧 Artifact Format Support     | ✅ Supports 30+ formats (Docker, Go, Helm, Conan, npm, NuGet, etc.)               | ⚠️ Supports ~8 formats (Maven, npm, NuGet, Docker, PyPI, etc.)       |
+| 2 | 📦 Build Metadata & Promotion | ✅ Native support via CLI/API (build-info, promotion across repos)                | ❌ No native support (manual scripting or Nexus Pro required)        |
+| 3 | 🔐 Security & License Scanning| ✅ Built-in via **JFrog Xray** (CVEs, license compliance, policy enforcement)     | ⚠️ Only with **Nexus IQ** (separate paid product)                    |
+| 4 | ☁️ SaaS Availability          | ✅ Available as **fully managed SaaS (Artifactory Cloud)**                        | ❌ Self-hosted only – no SaaS option                                 |
+| 5 | 🧪 CI/CD Integration & Automation| ✅ Deep integration with CI/CD tools (GitHub Actions, Jenkins, GitLab, etc.)    | ⚠️ Basic REST API & CLI; limited in OSS version                      |
+
+## 🔍 JFrog Xray vs Trivy: Feature Comparison
+
+| Capability                      | JFrog Xray                                | Trivy                                      |
+|--------------------------------|-------------------------------------------|--------------------------------------------|
+| Scan Docker images             | ✅ Yes (when stored in Artifactory)       | ✅ Yes (any source, including local)       |
+| Scan Terraform / K8s YAML      | ❌ No                                     | ✅ Yes                                     |
+| Scan Git repositories          | ❌ No                                     | ✅ Yes                                     |
+| Needs artifacts in Artifactory| ✅ Yes                                     | ❌ No                                      |
+| Local/standalone usage         | ❌ No (requires JFrog setup)              | ✅ Yes (lightweight CLI tool)              |
+| Ecosystem coverage             | Docker, Maven, npm, PyPI, etc.            | Docker, OS packages, IaC, Git repos, etc. |
+| Policy enforcement             | ✅ Centralized in JFrog Platform          | ❌ Manual via CI scripting                 |
+| Licensing & compliance checks  | ✅ Yes
+
+## 🔍 Use cases
+
+### ✅ Use JFrog Xray when:
+- You are using JFrog Artifactory and want integrated artifact security.
+- You need enterprise-grade policy enforcement, license compliance, and audit trails such as health care industry.
+- You need to block vulnerable artifacts during promotion or release.
+
+### ✅ Use Trivy when:
+- You want fast, free, local or CI-based vulnerability scanning.
+- You need to scan IaC files (Terraform, Kubernetes YAML).
+- You want a lightweight tool for scanning Docker images or code repositories.
