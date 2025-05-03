@@ -1,23 +1,25 @@
-#Artifactory & scanning 
-##Jfrog vs Nexus vs Trivy
+# Artifactory & Scanning  
+
+
+## Jfrog vs Nexus vs Trivy  
 
 # jfrog cli - upload artifacts
 Pre-condition : project and the repository is created in jfrog.  
 
-**Install jfrog CLI:** 
+**1) Install jfrog CLI:** 
 ```
 curl -fL https://getcli.jfrog.io | sh  
 sudo mv jfrog /usr/local/bin  
 jfrog --version
 ```
-**Configure jfrog server:** 
+**2) Configure jfrog server:** 
 Add a new JFrog CLI configuration named my-server that connects to the Artifactory URL using access token  
 ```
 sudo jfrog config add my-server  --url=<jfrog url> --access-token= <jfrog access token>  
 Ex:   
 jfrog config add my-server  --url=https://triale6ujpm.jfrog.io/  --access-token=eyJ2ZXIiOiI  
 ```
-**Upload artifacts:**  
+**3) Upload artifacts:**  
 ```
 jfrog rt u <"Jar file"> <Repo-name>  
 Ex:  
@@ -114,12 +116,17 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
 
 | Feature                     | JFrog Artifactory                      | Sonatype Nexus                      |
 |-----------------------------|----------------------------------------|-------------------------------------|
-| **Local Repository**         | Stores internal artifacts              | Stores internal artifacts           |
-| **Remote/Proxy Repository**  | Proxies external repositories (cache for external repositories)          | Proxies external repositories (cache for external repositories)      |
-| **Virtual/Group Repository** | Aggregates multiple repositories (group multiple repositories into a single URL)      | Aggregates multiple repositories (group multiple repositories into a single URL)    |
-| **Distribution Repository**  | Optimized for distributing packages    | Not available in the same form (typically handled by proxy/group) |
-| **Enterprise Features**      | Advanced security, HA, scalability, advanced distribution | Generally lighter, more simplified, good for basic artifact management |
-| **Cost**                     | Paid version with advanced features (Free for basic use) | Free OSS version, enterprise version has additional features |
+| **Local/hosted**         | Stores internal artifacts              | Stores internal artifacts           |
+| **Remote/Proxy**         | Proxies external repositories (cache for external repositories)          | Proxies external repositories (cache for external repositories)      |
+| **Virtual/Group**        | Aggregates multiple repositories (group multiple repositories into a single URL)      | Aggregates multiple repositories (group multiple repositories into a single URL)    |
+| **Distribution**         | Optimized for distributing packages    | Not available in the same form (typically handled by proxy/group) |
+| **Enterprise**           | Advanced security, HA, scalability, advanced distribution | Generally lighter, more simplified, good for basic artifact management |
+| **Cost**                 | Paid version with advanced features (Free for basic use) | Free OSS version, enterprise version has additional features |
+
+**Java maven repositories:**
+Local (jfrog) :  Can hadle both Release and snapshot version
+Hosted (nexus):  Release version (immutable - can not override), Snapshot version (Mutable - can be overwridden)
+
 
 ## 🔍 Vulnerability Scanning Tools Comparison
 
