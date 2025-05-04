@@ -3,7 +3,9 @@
 
 ## Upload Artifacts  
 
-# Jfrog cli 
+_This text is underlined_
+
+### _Using Jfrog cli_ 
 Pre-condition : project and the repository is created in jfrog.  
 
 **1) Install jfrog CLI:** 
@@ -30,7 +32,7 @@ jfrog rt u   "maven-calc-jenkins-1.0-SNAPSHOT.jar" calculator-local/
 jfrog rt s <repo>-name>/<artifact-name>  
 jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
 ```
-# GitHub Actions 
+### _Using GitHub Actions_ 
 1. Jfrog: Create project--> Repository --> permissions
 2. Install and configure the JFrog CLI
 3. Upload jar/war to Artifactory
@@ -61,7 +63,7 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
           #     jf rt upload "target/*.jar" "calculator-local/test/com/"
 ```
 
-# Jenkins pipeline
+# _Using Jenkins pipeline_
 
 
 
