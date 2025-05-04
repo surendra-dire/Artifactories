@@ -73,7 +73,7 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
 |---|-------------------------------|-----------------------------------------------------------------------------------|----------------------------------------------------------------------|
 | 1 | 🔧 Artifact Format Support     | ✅ Supports 30+ formats (Docker, Go, Helm, Conan, npm, NuGet, etc.)               | ⚠️ Supports ~8 formats (Maven, npm, NuGet, Docker, PyPI, etc.)       |
 | 2 | 📦 Build Metadata & Promotion | ✅ Native support via CLI/API (build-info, promotion across repos)                | ❌ No native support (manual scripting or Nexus Pro required)        |
-| 3 | 🔐 Security & License Scanning| ✅ Built-in via **JFrog Xray** (CVEs, license compliance, policy enforcement)     | ⚠️ Only with **Nexus IQ** (separate paid product)                    |
+| 3 | 🔐 Security & License Scanning| ✅ Built-in via **JFrog Xray** (CVEs, license compliance, policy enforcement)     | ⚠️ Only with **Nexus IQ** (separate licesne)                         |
 | 4 | ☁️ SaaS Availability          | ✅ Available as **fully managed SaaS (Artifactory Cloud)**                        | ❌ Self-hosted only – no SaaS option                                 |
 | 5 | 🧪 CI/CD Integration & Automation| ✅ Deep integration with CI/CD tools (GitHub Actions, Jenkins, GitLab, etc.)    | ⚠️ Basic REST API & CLI; limited in OSS version                      |
 
