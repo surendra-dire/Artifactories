@@ -1,4 +1,5 @@
 # Jfrog 
+**JFrog** manages packages _dependencies and binaries_ efficiently in a **centralized** manner.
 
 
 ## Upload Artifacts  
