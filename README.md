@@ -25,7 +25,7 @@ jfrog rt u <"Jar file"> <Repo-name>
 Ex:  
 jfrog rt u   "maven-calc-jenkins-1.0-SNAPSHOT.jar" calculator-local/  
 ```
-Verify file uploaded:  
+**4) Verify file uploaded:**  
 ```
 jfrog rt s <repo>-name>/<artifact-name>  
 jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
