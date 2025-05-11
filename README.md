@@ -67,9 +67,10 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
 2. Install the JFrog Artifactory plugin in Jenkins and configure the Artifactory server URL along with the required credentials.  
 3. Install the JFrog CLI, either manually on the build server or dynamically within the Jenkins pipeline.  
 4. Configure the JFrog CLI with Artifactory connection details (server ID, URL, username, and password/API key).   
-	1) The JFrog CLI acts as a client that communicates with Artifactory. Artifactory is a secured artifact repository.  
-	2) Where to send requests (Artifactory URL).  
-	3) Who is making the request (Username).  
+Note: The JFrog CLI acts as a client that communicates with Artifactory. Artifactory is a secured artifact repository.  
+	1) Where to send requests (Artifactory URL).  
+	2) Who is making the request (Username).
+	3) How to verify the user (Password or token)
 5. Use the JFrog CLI commands in the pipeline to upload artifacts to the configured Artifactory repository.  
 ```
 pipeline {
