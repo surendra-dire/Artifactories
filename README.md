@@ -77,12 +77,12 @@ pipeline {
     agent any  
 
     tools {
-        maven 'maven 3.8.7'  										// Ensure this is configured in Jenkins
+        maven 'maven 3.8.7'  								          // Ensure this is configured in Jenkins
     }
 
     environment {
         MAVEN_OPTS = "-Xmx1024m"
-        ARTIFACTORY_URL = 'https://triale6ujpm.jfrog.io/artifactory'				       // From plugin configuration
+        ARTIFACTORY_URL = 'https://triale6ujpm.jfrog.io/artifactory'				     // From plugin configuration
     }
 
     stages {
@@ -130,7 +130,7 @@ pipeline {
             steps {
                 echo 'Uploading artifacts to Artifactory...'
                 script {
-                    withCredentials([usernamePassword(					  			// From Jenkins credentials
+                    withCredentials([usernamePassword(					 // From Jenkins credentials
                         credentialsId: 'jfrog-instance-id',
                         usernameVariable: 'ARTIFACTORY_USER',
                         passwordVariable: 'ARTIFACTORY_PASSWORD'
@@ -164,6 +164,9 @@ pipeline {
 ```
 
 ### D) _Using Jenkins pipeline - Jenkins plugin_ 
+1. Configures the Artifactory server.Sets the connection details for Artifactory (rtServer)
+2. Upload Artifacts to Artifactory (rtUpload)
+3. 
 ```
 pipeline {
     agent any  
