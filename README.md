@@ -163,7 +163,7 @@ pipeline {
 }
 ```
 
-### D) _Using Jenkins pipeline - Jenkins plugin_ 
+### D) _Using Jenkins pipeline - Artifactory Jenkins plugin_ 
 1. Configures the Artifactory server.Sets the connection details for Artifactory (rtServer)
 2. Upload Artifacts to Artifactory (rtUpload)
 3. 
