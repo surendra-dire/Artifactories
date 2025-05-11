@@ -4,7 +4,7 @@
 
 ## Upload Artifacts  
 
-### A) _Using Jfrog cli_ 
+### A) _Using Jfrog cli [manully)_ 
 Pre-condition : project and the repository is created in jfrog.  
 
 **1) Install jfrog CLI:** 
@@ -12,7 +12,7 @@ Pre-condition : project and the repository is created in jfrog.
 curl -fL https://getcli.jfrog.io | sh  
 sudo mv jfrog /usr/local/bin  
 jfrog --version
-```
+```  
 **2) Configure jfrog server:** 
 Add a new JFrog CLI configuration named my-server that connects to the Artifactory URL using access token  
 ```
@@ -61,8 +61,8 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
           #   run: |
           #     jf rt upload "target/*.jar" "calculator-local/test/com/"
 ```
+### B) _Using Jenkins pipeline_ 
 
-# Using Jenkins pipeline  
 1. Setup artifactory credentials.
 2. Install the JFrog Artifactory plugin in Jenkins and configure the Artifactory server URL along with the required credentials.  
 3. Install the JFrog CLI, either manually on the build server or dynamically within the Jenkins pipeline.  
@@ -161,7 +161,6 @@ pipeline {
         }
     }
 }
-
 ```
 
 
