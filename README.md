@@ -81,7 +81,7 @@ pipeline {
 
     environment {
         MAVEN_OPTS = "-Xmx1024m"
-        ARTIFACTORY_URL = 'https://triale6ujpm.jfrog.io/artifactory'				       // From pluginConfiguratiom
+        ARTIFACTORY_URL = 'https://triale6ujpm.jfrog.io/artifactory'				       // From plugin configuration
     }
 
     stages {
@@ -129,7 +129,7 @@ pipeline {
             steps {
                 echo 'Uploading artifacts to Artifactory...'
                 script {
-                    withCredentials([usernamePassword(					  		// From Jenkins credentials setup
+                    withCredentials([usernamePassword(					  			// From Jenkins credentials
                         credentialsId: 'jfrog-instance-id',
                         usernameVariable: 'ARTIFACTORY_USER',
                         passwordVariable: 'ARTIFACTORY_PASSWORD'
@@ -143,7 +143,7 @@ pipeline {
                                     --interactive=false
                             fi
 
-                            jfrog rt upload "target/*.jar" "calculator-local/com/mycompany/your-artifact/"
+                            jfrog rt upload "target/*.jar" "calculator-local/com/mycompany/your-artifact/"    // Update with your repository
                         '''
                     }
                 }
