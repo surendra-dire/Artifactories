@@ -62,8 +62,105 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
           #     jf rt upload "target/*.jar" "calculator-local/test/com/"
 ```
 
-# Using Jenkins pipeline
+# Using Jenkins pipeline  
+1. Install the JFrog Artifactory plugin in Jenkins and configure the Artifactory server URL along with the required credentials.  
+2. Install the JFrog CLI, either manually on the build server or dynamically within the Jenkins pipeline.  
+3. Configure the JFrog CLI with Artifactory connection details (server ID, URL, username, and password/API key).   
+	1) The JFrog CLI acts as a client that communicates with Artifactory. Artifactory is a secured artifact repository.  
+	2) Where to send requests (Artifactory URL).  
+	3) Who is making the request (Username).  
+4. Use the JFrog CLI commands in the pipeline to upload artifacts to the configured Artifactory repository.  
+```
+pipeline {
+    agent any  
 
+    tools {
+        maven 'maven 3.8.7'  // Ensure this is configured in Jenkins
+    }
+
+    environment {
+        MAVEN_OPTS = "-Xmx1024m"
+        ARTIFACTORY_URL = 'https://triale6ujpm.jfrog.io/artifactory'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Cloning the repository...'
+                git url: 'https://github.com/surendra-dire/maven-calc-jenkins.git', branch: 'main'      //Update with your repo
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Building the project...'
+                sh 'mvn clean compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                echo 'Packaging the application...'
+                sh 'mvn package'
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                echo 'Archiving the JAR...'
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+            }
+        }
+
+        stage('Upload to Artifactory') {
+            steps {
+                echo 'Uploading artifacts to Artifactory...'
+                script {
+                    withCredentials([usernamePassword(
+                        credentialsId: 'jfrog-instance-id',
+                        usernameVariable: 'ARTIFACTORY_USER',
+                        passwordVariable: 'ARTIFACTORY_PASSWORD'
+                    )]) {
+                        sh '''
+                            if ! jfrog config show my-server > /dev/null 2>&1; then
+                                jfrog config add my-server \
+                                    --artifactory-url=$ARTIFACTORY_URL \
+                                    --user=$ARTIFACTORY_USER \
+                                    --password=$ARTIFACTORY_PASSWORD \
+                                    --interactive=false
+                            fi
+
+                            jfrog rt upload "target/*.jar" "calculator-local/com/mycompany/your-artifact/"
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Build completed successfully!'
+        }
+        failure {
+            echo '❌ Build failed.'
+        }
+    }
+}
+
+```
 
 
 # Jfrog vs Nexus
