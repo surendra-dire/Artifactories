@@ -63,13 +63,14 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
 ```
 
 # Using Jenkins pipeline  
-1. Install the JFrog Artifactory plugin in Jenkins and configure the Artifactory server URL along with the required credentials.  
-2. Install the JFrog CLI, either manually on the build server or dynamically within the Jenkins pipeline.  
-3. Configure the JFrog CLI with Artifactory connection details (server ID, URL, username, and password/API key).   
+1. Setup artifactory credentials.
+2. Install the JFrog Artifactory plugin in Jenkins and configure the Artifactory server URL along with the required credentials.  
+3. Install the JFrog CLI, either manually on the build server or dynamically within the Jenkins pipeline.  
+4. Configure the JFrog CLI with Artifactory connection details (server ID, URL, username, and password/API key).   
 	1) The JFrog CLI acts as a client that communicates with Artifactory. Artifactory is a secured artifact repository.  
 	2) Where to send requests (Artifactory URL).  
 	3) Who is making the request (Username).  
-4. Use the JFrog CLI commands in the pipeline to upload artifacts to the configured Artifactory repository.  
+5. Use the JFrog CLI commands in the pipeline to upload artifacts to the configured Artifactory repository.  
 ```
 pipeline {
     agent any  
@@ -80,14 +81,14 @@ pipeline {
 
     environment {
         MAVEN_OPTS = "-Xmx1024m"
-        ARTIFACTORY_URL = 'https://triale6ujpm.jfrog.io/artifactory'
+        ARTIFACTORY_URL = 'https://triale6ujpm.jfrog.io/artifactory'				       // From pluginConfiguratiom
     }
 
     stages {
         stage('Checkout') {
             steps {
                 echo 'Cloning the repository...'
-                git url: 'https://github.com/surendra-dire/maven-calc-jenkins.git', branch: 'main'      //Update with your repo
+                git url: 'https://github.com/surendra-dire/maven-calc-jenkins.git', branch: 'main'      // Update with your repo
             }
         }
 
@@ -128,7 +129,7 @@ pipeline {
             steps {
                 echo 'Uploading artifacts to Artifactory...'
                 script {
-                    withCredentials([usernamePassword(
+                    withCredentials([usernamePassword(					  		// From Jenkins credentials setup
                         credentialsId: 'jfrog-instance-id',
                         usernameVariable: 'ARTIFACTORY_USER',
                         passwordVariable: 'ARTIFACTORY_PASSWORD'
