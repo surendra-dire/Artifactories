@@ -1,5 +1,5 @@
 # Jfrog 
-**JFrog** provides a centralized platform for managing software dependencies and build artifacts.
+**JFrog** provides a centralized platform for managing software dependencies and build artifacts. It is available in three different editions:
 
 **JFrog Artifactory Community Edition (CE)** :  A free version ideal for small teams or personal projects. It has an embedded H2 database.
 **JFrog Artifactory Pro**: A more feature-rich version than the Community Edition, offering advanced functionalities includes support for additional repository types (e.g., Docker, npm), more integrations, and advanced access controls.  
