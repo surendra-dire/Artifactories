@@ -287,3 +287,53 @@ pipeline {
 }
 ```
 
+```
+# Nexus -Installation (Ubuntu)
+
+# update package list
+sudo apt update
+sudo apt install openjdk-11-jdk
+or
+wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.17%2B8/OpenJDK11U-jdk_x64_linux_hotspot_11.0.17_8.tar.gz
+tar xvfz OpenJDK11U-jdk_x64_linux_hotspot_11.0.17_8.tar.gz
+mv jdk-11.0.17+8 jdk-11
+mv jdk-11 /opt/java/jdk-11
+
+# Download and extract the nexus (Go with current LTS version)
+cd /opt
+sudo wget https://download.sonatype.com/nexus/3/nexus-3.80.0-06-linux-x86_64.tar.gz
+sudo tar xvfz nexus-*.tar.gz
+sudo mv nexus-3.80.0-06 nexus
+
+# Configure the nexus to run as service. Create user and change ownership.  
+sudo useradd -r -m -s /bin/bash nexus
+sudo chown -R nexus:nexus /opt/nexus
+sudo chown -R nexus:nexus /opt/sonatype-work
+
+# Configure Nexus to Run as a Service
+sudo nano /etc/systemd/system/nexus.service
+[Unit]
+Description=Nexus Repository Manager
+Documentation=http://help.sonatype.com/
+After=network.target
+
+[Service]
+Environment="JAVA_HOME=/opt/java/jdk-11"
+User=nexus
+Group=nexus
+Type=forking
+ExecStart=/opt/nexus/bin/nexus start
+ExecStop=/opt/nexus/bin/nexus stop
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+
+# Reload Daemon service and enable prometheus to start post reboot
+sudo systemctl daemon-reload
+sudo systemctl enable nexus
+sudo systemctl start nexus
+sudo systemctl status nexus
+
+# Ensure port 9090 is open in firewall
