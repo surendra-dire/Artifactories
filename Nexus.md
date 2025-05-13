@@ -1,6 +1,10 @@
-# Jfrog 
-**JFrog** provides a centralized platform for managing software dependencies and build artifacts.
-
+# Nexus ( Nexus Repository Manager)
+**Nexus** provides a centralized platform for managing software dependencies and build artifacts.
+ Nexus Repository Manager is a software repository manager developed by Sonatype. It is available in different editions:
+ 
+**Nexus Repository OSS (Open Source Software)**: A free, open-source version with essential features. Ideal for individual developers/small teams working on personal projects or POC applications. It has Embedded H2 database.
+**Nexus Repository Community Edition (CE)**: A free tier offering enhanced features beyond the OSS version. Supports additional repository formats like Cargo (Rust), support for PostgreSQL etc. Ideal for growing teams and organizations requiring more robust features without incurring additional costs.  
+**Nexus Repository Pro**: A commercial version with advanced features and enterprise support.  
 
 ## Upload Artifacts  
 
