@@ -4,7 +4,7 @@
 **JFrog Artifactory Community Edition (CE)** :  A free version ideal for small teams or personal projects. It has an embedded H2 database.
 **JFrog Artifactory Pro**: A more feature-rich version than the Community Edition, offering advanced functionalities includes support for additional repository types (e.g., Docker, npm), more integrations, and advanced access controls.  
 **JFrog Artifactory Enterprise**: Includes all features of Artifactory Pro, with additional enterprise capabilities like multi-site replication, advanced analytics, disaster recovery & Advanced Security. 
-Both JFrog Artifactory Pro and JFrog Artifactory Enterprise support a variety of database options, including PostgreSQL, MySQL, Oracle, and the Embedded H2 database
+Both JFrog Artifactory Pro and Enterprise editions support a variety of database options, including PostgreSQL, MySQL, Oracle, and the Embedded H2 database
 
 ## Upload Artifacts  
 
