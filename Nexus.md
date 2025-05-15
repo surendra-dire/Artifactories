@@ -7,34 +7,7 @@
 
 ## Upload Artifacts  
 
-### A) _Using Jfrog cli [manully)_ 
-Pre-condition : project and the repository is created in jfrog.  
-
-**1) Install jfrog CLI:** 
-```   
-curl -fL https://getcli.jfrog.io | sh  
-sudo mv jfrog /usr/local/bin  
-jfrog --version
-```  
-**2) Configure jfrog server:** 
-Add a new JFrog CLI configuration named my-server that connects to the Artifactory URL using access token  
-```
-sudo jfrog config add my-server  --url=<jfrog url> --access-token= <jfrog access token>  
-Ex:   
-jfrog config add my-server  --url=https://triale6ujpm.jfrog.io/  --access-token=eyJ2ZXIiOiI  
-```
-**3) Upload artifacts:**  
-```
-jfrog rt u <"Jar file"> <Repo-name>  
-Ex:  
-jfrog rt u   "maven-calc-jenkins-1.0-SNAPSHOT.jar" calculator-local/  
-```
-**4) Verify file uploaded:**  
-```
-jfrog rt s <repo>-name>/<artifact-name>  
-jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
-```
-### B) _Using GitHub Actions - CLI_ 
+### A) _Using GitHub Actions_
 1. Jfrog: Create project--> Repository --> permissions
 2. Install and configure the JFrog CLI
 3. Upload jar/war to Artifactory
@@ -64,7 +37,7 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
           #   run: |
           #     jf rt upload "target/*.jar" "calculator-local/test/com/"
 ```
-### C) _Using Jenkins pipeline - CLI_ 
+### B) _Using Jenkins pipeline_
 
 1. Setup artifactory credentials.
 2. Install the JFrog Artifactory plugin in Jenkins and configure the Artifactory server URL along with the required credentials.  
@@ -166,129 +139,9 @@ pipeline {
 }
 ```
 
-### D) _Using Jenkins pipeline - Artifactory Jenkins plugin_ 
-1. Configures the Artifactory server.Sets the connection details for Artifactory (rtServer)
-2. Upload Artifacts to Artifactory (rtUpload)
-3. 
-```
-pipeline {
-    agent any  
-    tools {
-        maven 'maven 3.8.7'  
-    }
-    environment {
-        //JFrog credentials ID
-        JFROG_CREDENTIALS_ID = 'jfrog-instance-id'
-        
-        // Build version for artifact tracking
-        BUILD_VERSION = "${env.BUILD_NUMBER}"
-    }
-    stages {
-        stage('Checkout') {
-            steps {
-                echo 'Cloning the repository...'
-                git url: 'https://github.com/surendra-dire/maven-calc-jenkins.git', branch: 'main'
-            }
-        }
-        
-        stage('Build') {
-            steps {
-                echo 'Building the project...'
-                sh 'mvn clean compile'
-            }
-        }
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                }
-            }
-        }
-        stage('Package') {
-            steps {
-                echo 'Packaging the application...'
-                sh 'mvn package'
-            }
-        }
-        stage('Archive Artifacts') {
-            steps {
-                echo 'Archiving the JAR...'
-                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-            }
-        }
-        stage('Setup Artifactory') {
-            steps {
-                script {
-                    // Configure Artifactory server
-                    def server = Artifactory.server('jfrog-instance-id')
-                    env.ARTIFACTORY_URL = server.url
-                    echo "Artifactory URL: ${env.ARTIFACTORY_URL}"
-                    
-                    rtServer (
-                        id: 'my-artifactory-server',                       
-                        url: "${env.ARTIFACTORY_URL}",                          // Artifactory URL
-                        credentialsId: "${JFROG_CREDENTIALS_ID}"                // Jenkins credentials - fixed the variable name
-                    )
-                }
-            }
-        }
-        
-        stage('Upload to Artifactory') {
-            steps {
-                script {
-                    def buildInfo = rtBuildInfo()  
-                    def currentDate = new Date().format("yyyy-MM-dd_HH-mm-ss")
-                    echo "Current date: ${currentDate}"
-
-                    // You can also set it as an environment variable if needed
-                    env.BUILD_DATE = currentDate
-                    
-                    // Upload artifacts to Artifactory
-                    rtUpload (
-                        serverId: 'my-artifactory-server',     // Server ID defined in rtServer
-                        spec: """{
-                            "files": [
-                                {
-                                    "pattern": "target/*.jar",                                                
-                                    "target": "calculator-local/${BUILD_VERSION}/",  
-                               
-                                    "props": "build.date=${env.BUILD_DATE};build.number=${BUILD_NUMBER}"  
-                                }
-                            ]
-                        }""",
-                        buildInfo: buildInfo
-                    )
-                    
-                    // Publish the build info to Artifactory
-                    rtPublishBuildInfo (
-                        serverId: 'my-artifactory-server',
-                        buildInfo: buildInfo
-                    )
-                }
-            }
-        }
-    }
-    post {
-        success {
-            echo '✅ Build completed successfully!'
-        }
-        failure {
-            echo '❌ Build failed.'
-        }
-        always {
-            // Clean workspace after build (optional)
-            cleanWs()
-        }
-    }
-}
-```
 
 ```
-# Nexus -Installation (Ubuntu)
+## Nexus  -Installation (Ubuntu)   
 
 # update package list
 sudo apt update
