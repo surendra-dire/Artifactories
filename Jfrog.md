@@ -54,9 +54,11 @@ jfrog rt s caculator-local/maven-calc-jenkins-1.0-SNAPSHOT.jar
         shell: bash
         run: |
           echo "Uploading artifact..."
+
           COMMIT_ID=$(echo $GITHUB_SHA | cut -c1-7)
           DATE=$(date +'%Y-%m-%d')
           ARTIFACTORY_PATH="calculator-local/test/com/${DATE}-${COMMIT_ID}/"
+
           echo "Uploading to: $ARTIFACTORY_PATH"
           jf rt upload "target/*.jar" "$ARTIFACTORY_PATH" --flat=true
 
