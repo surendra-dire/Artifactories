@@ -18,8 +18,11 @@
         with:
           version: latest
         env:
-          JF_URL: ${{ secrets.JFROG_URL }}
-          JF_ACCESS_TOKEN: ${{ secrets.JFROG_TOKEN }}
+          NEXUS_URL: ${{ secrets.NEXUS_URL }}
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+	  NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          NEXUS_HOSTED_REPO: ${{ secrets.NEXUS_PASSWORD }}
+          NEXUS_RELEASE_REPO: ${{ secrets.JFROG_TOKEN }}
 
       # Use 'jf' inside a single shell script
       - name: Upload JAR to Artifactory with Commit ID and Date
