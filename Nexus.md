@@ -24,21 +24,7 @@
           NEXUS_HOSTED_REPO: ${{ secrets.NEXUS_PASSWORD }}
           NEXUS_RELEASE_REPO: ${{ secrets.JFROG_TOKEN }}
 
-      # Use 'jf' inside a single shell script
-      - name: Upload JAR to Artifactory with Commit ID and Date
-        shell: bash
-        run: |
-          echo "Uploading artifact..."
-          COMMIT_ID=$(echo $GITHUB_SHA | cut -c1-7)
-          DATE=$(date +'%Y-%m-%d')
-          ARTIFACTORY_PATH="calculator-local/test/com/${DATE}-${COMMIT_ID}/"
-          echo "Uploading to: $ARTIFACTORY_PATH"
-          jf rt upload "target/*.jar" "$ARTIFACTORY_PATH" --flat=true
-
-      # or simply
-      # - name: Upload JAR to Artifactory
-          #   run: |
-          #     jf rt upload "target/*.jar" "calculator-local/test/com/"
+      
 ```
 ### B) _Using Jenkins pipeline_
 
