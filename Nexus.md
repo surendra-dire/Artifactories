@@ -8,23 +8,93 @@
 ## Upload Artifacts  
 
 ### A) _Using GitHub Actions_
-1. Jfrog: Create project--> Repository --> permissions
-2. Install and configure the JFrog CLI
-3. Upload jar/war to Artifactory
+1. Nexus: Create project--> Repository --> permissions
+2. Authenitcate & upload the jar/war to nexus repository
 ```
-     # Set up JFrog CLI (this installs & configures it)
-      - name: Set up JFrog CLI
-        uses: jfrog/setup-jfrog-cli@v3
-        with:
-          version: latest
-        env:
-          NEXUS_URL: ${{ secrets.NEXUS_URL }}
-          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-	  NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          NEXUS_HOSTED_REPO: ${{ secrets.NEXUS_PASSWORD }}
-          NEXUS_RELEASE_REPO: ${{ secrets.JFROG_TOKEN }}
+     # .github/workflows/build.yml
+name: Build-Nexus
 
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: [self-hosted, label1]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: maven
+
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: jar
+          path: target/*.jar
+
+      # Step 1: Get SNAPSHOT/Release version from pom.xml
+      - name: Get version info
+        id: version-info
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -DforceStdout -q \
+            | grep -E '^[0-9]+\.[0-9]+.*$' \
+            | sed 's/\x1B\[[0-9;]*[a-zA-Z]//g' \
+            | tr -d '\r')
       
+          echo "Cleaned Maven version: '$VERSION'"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      
+          if [[ "$VERSION" == *-SNAPSHOT ]]; then
+            echo "is_snapshot=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is_snapshot=false" >> "$GITHUB_OUTPUT"
+          fi
+      
+      # Step 2: Set env based on snapshot
+      - name: Set CUSTOM_SECRET to SNAPSHOT token
+        if: ${{ steps.version-info.outputs.is_snapshot == 'true' }}
+        run: echo "CUSTOM_REPO_NAME_SECRET=${{ secrets.NEXUS_SNAPSHOT_REPO }}" >> $GITHUB_ENV
+      
+      - name: Set CUSTOM_SECRET to RELEASE token
+        if: ${{ steps.version-info.outputs.is_snapshot != 'true' }}
+        run: echo "CUSTOM_REPO_NAME_SECRET=${{ secrets.NEXUS_RELEASE_REPO }}" >> $GITHUB_ENV
+      
+      # STEP 3: Configure Nexus
+      - name: Configure Maven for Nexus
+        uses: s4u/maven-settings-action@v2
+        with:
+          servers: '[{ "id": "nexus", "username": "${{ secrets.NEXUS_USERNAME }}", "password": "${{ secrets.NEXUS_PASSWORD }}" }]'
+      
+      # STEP 4: Deploy JAR
+      - name: Deploy main JAR to Nexus
+        run: |
+          JAR_FILE=$(find target -type f -name "*.jar" | head -n 1)
+          echo "Found JAR: $JAR_FILE"
+      
+          mvn deploy:deploy-file \
+            -Dfile="$JAR_FILE" \
+            -DgroupId=com.example \
+            -DartifactId=maven-calc-jenkins \
+            -Dversion=${{ steps.version-info.outputs.version }} \
+            -Dpackaging=jar \
+            -DrepositoryId=nexus \
+            -Durl="${{ secrets.NEXUS_SERVER_URL }}/repository/$CUSTOM_REPO_NAME_SECRET/" \
+            -DgeneratePom=false
+     
 ```
 ### B) _Using Jenkins pipeline_
 
