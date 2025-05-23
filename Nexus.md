@@ -8,10 +8,9 @@
 ## Upload Artifacts  
 
 ### A) _Using GitHub Actions_
-1. Nexus: Create project--> Repository --> permissions
+1. Nexus: Create project--> Repository --> user permissions
 2. Authenitcate & upload the jar/war to nexus repository
 ```
-     # .github/workflows/build.yml
 name: Build-Nexus
 
 on:
@@ -64,16 +63,16 @@ jobs:
             echo "is_snapshot=false" >> "$GITHUB_OUTPUT"
           fi
       
-      # Step 2: Set env based on snapshot
-      - name: Set CUSTOM_SECRET to SNAPSHOT token
+      # Step 2: Set repository name (snapshot/release)
+      - name: Set repository name to snapshot
         if: ${{ steps.version-info.outputs.is_snapshot == 'true' }}
-        run: echo "CUSTOM_REPO_NAME_SECRET=${{ secrets.NEXUS_SNAPSHOT_REPO }}" >> $GITHUB_ENV
+        run: echo "REPO_NAME=${{ secrets.NEXUS_SNAPSHOT_REPO }}" >> $GITHUB_ENV
       
-      - name: Set CUSTOM_SECRET to RELEASE token
+      - name: Set repository name to release
         if: ${{ steps.version-info.outputs.is_snapshot != 'true' }}
-        run: echo "CUSTOM_REPO_NAME_SECRET=${{ secrets.NEXUS_RELEASE_REPO }}" >> $GITHUB_ENV
+        run: echo "REPO_NAME=${{ secrets.NEXUS_RELEASE_REPO }}" >> $GITHUB_ENV
       
-      # STEP 3: Configure Nexus
+      # STEP 3: Configure maven to connect to a nexus remote repository
       - name: Configure Maven for Nexus
         uses: s4u/maven-settings-action@v2
         with:
@@ -84,7 +83,8 @@ jobs:
         run: |
           JAR_FILE=$(find target -type f -name "*.jar" | head -n 1)
           echo "Found JAR: $JAR_FILE"
-      
+          echo "Target URL: ${{ secrets.NEXUS_SERVER_URL }}/repository/$REPO_NAME/"
+
           mvn deploy:deploy-file \
             -Dfile="$JAR_FILE" \
             -DgroupId=com.example \
@@ -92,8 +92,8 @@ jobs:
             -Dversion=${{ steps.version-info.outputs.version }} \
             -Dpackaging=jar \
             -DrepositoryId=nexus \
-            -Durl="${{ secrets.NEXUS_SERVER_URL }}/repository/$CUSTOM_REPO_NAME_SECRET/" \
-            -DgeneratePom=false
+            -Durl="${{ secrets.NEXUS_SERVER_URL }}/repository/$REPO_NAME/" \
+            -DgeneratePom=false 
      
 ```
 ### B) _Using Jenkins pipeline_
