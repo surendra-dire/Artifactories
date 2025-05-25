@@ -209,7 +209,8 @@ steps {
 
 ## Nexus  -Installation (Ubuntu)   
 
-# update package list
+**update package list**  
+```
 sudo apt update
 sudo apt install openjdk-11-jdk
 or
@@ -217,19 +218,23 @@ wget https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.1
 tar xvfz OpenJDK11U-jdk_x64_linux_hotspot_11.0.17_8.tar.gz
 mv jdk-11.0.17+8 jdk-11
 mv jdk-11 /opt/java/jdk-11
-
-# Download and extract the nexus (Go with current LTS version)
+```
+**Download and extract the nexus (Go with current LTS version)**
+```
 cd /opt
 sudo wget https://download.sonatype.com/nexus/3/nexus-3.80.0-06-linux-x86_64.tar.gz
 sudo tar xvfz nexus-*.tar.gz
 sudo mv nexus-3.80.0-06 nexus
-
-# Configure the nexus to run as service. Create user and change ownership.  
+```
+**Configure the nexus to run as service. Create user and change ownership.**  
+```
 sudo useradd -r -m -s /bin/bash nexus
 sudo chown -R nexus:nexus /opt/nexus
 sudo chown -R nexus:nexus /opt/sonatype-work
+```
 
-# Configure Nexus to Run as a Service
+**Configure Nexus to Run as a Service**
+```
 sudo nano /etc/systemd/system/nexus.service
 [Unit]
 Description=Nexus Repository Manager
@@ -256,7 +261,7 @@ sudo systemctl start nexus
 sudo systemctl status nexus
 
 # Ensure port 9090 is open in firewall
-
+```
 
 
 **Extras:**
