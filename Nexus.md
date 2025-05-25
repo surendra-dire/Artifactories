@@ -98,33 +98,55 @@ jobs:
 ```
 ### B) _Using Jenkins pipeline_
 
-1. Setup artifactory credentials.
-2. Install the JFrog Artifactory plugin in Jenkins and configure the Artifactory server URL along with the required credentials.  
-3. Install the JFrog CLI, either manually on the build server or dynamically within the Jenkins pipeline.  
-4. Configure the JFrog CLI with Artifactory connection details (server ID, URL, username, and password/API key).   
-Note: The JFrog CLI acts as a client that communicates with Artifactory. Artifactory is a secured artifact repository.  
-	1) Where to send requests (Artifactory URL).  
-	2) Who is making the request (Username).
-	3) How to verify the user (Password or token)
-5. Use the JFrog CLI commands in the pipeline to upload artifacts to the configured Artifactory repository.  
+1. First update the pom.xml file and add distribution management section having nexus repository url
 ```
-pipeline {
+<distributionManagement>
+    <repository>
+        <id>my-nexus-release</id>
+        <url>http://192.168.178.94:8082/repository/Calc-maven-release-repo/</url>
+    </repository>
+    <snapshotRepository>
+        <id>my-nexus-snapshot</id>
+        <url>http://192.168.178.94:8082/repository/Calc-maven-hosted-repo/</url>
+    </snapshotRepository>
+</distributionManagement>
+```
+2. Manage the settings.xml file for user details [Managed Jenkins --> Managed files --> Add a new config]
+   Note: Install the Config File Provider Plugin for Managed Jenkins.
+```
+   <server>
+      <id>my-nexus-snapshot</id>
+      <username>admin</username>
+      <password>admin</password>
+    </server>
+     <server>
+      <id>my-nexus-release</id>
+      <username>admin</username>
+      <password>admin</password>
+    </server>
+```
+3. Use Pipeline Syntax --> Select step withMaven: Provide Maven environment. Select maven and settings.xml global file and generate syntax.
+   Add maven deploy.
+```
+steps {
+	withMaven(globalMavenSettingsConfig: 'global-settings-id', jdk: '', maven: 'maven 3.8.7', mavenSettingsConfig: '', traceability: true) {
+	     sh 'mvn deploy'
+	}
+```
+4.  End to end pipeline
+```
+ pipeline {
     agent any  
 
     tools {
-        maven 'maven 3.8.7'  								          // Ensure this is configured in Jenkins
-    }
-
-    environment {
-        MAVEN_OPTS = "-Xmx1024m"
-        ARTIFACTORY_URL = 'https://triale6ujpm.jfrog.io/artifactory'				     // From plugin configuration
+        maven 'maven 3.8.7'   // Ensure this is configured in Jenkins
     }
 
     stages {
         stage('Checkout') {
             steps {
                 echo 'Cloning the repository...'
-                git url: 'https://github.com/surendra-dire/maven-calc-jenkins.git', branch: 'main'      // Update with your repo
+                git url: 'https://github.com/surendra-dire/maven-calc-jenkins.git', branch: 'main'
             }
         }
 
@@ -138,7 +160,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh 'mvn test'
+                sh 'mvn test -Dsurefire.timeout=300'
             }
             post {
                 always {
@@ -161,45 +183,30 @@ pipeline {
             }
         }
 
-        stage('Upload to Artifactory') {
+        stage('Upload to Nexus repository') {
             steps {
-                echo 'Uploading artifacts to Artifactory...'
-                script {
-                    withCredentials([usernamePassword(					 // From Jenkins credentials
-                        credentialsId: 'jfrog-instance-id',
-                        usernameVariable: 'ARTIFACTORY_USER',
-                        passwordVariable: 'ARTIFACTORY_PASSWORD'
-                    )]) {
-                        sh '''
-                            if ! jfrog config show my-server > /dev/null 2>&1; then
-                                jfrog config add my-server \
-                                    --artifactory-url=$ARTIFACTORY_URL \
-                                    --user=$ARTIFACTORY_USER \
-                                    --password=$ARTIFACTORY_PASSWORD \
-                                    --interactive=false
-                            fi
-
-                            jfrog rt upload "target/*.jar" "calculator-local/com/mycompany/your-artifact/"    // Update with your repository
-                        '''
-                    }
+                echo 'Deploying artifacts in Nexus ...'
+                withMaven(globalMavenSettingsConfig: '', jdk: '', maven: '', mavenSettingsConfig: '', traceability: true) {
+                    sh 'mvn deploy'
                 }
             }
-        }
+        } 
     }
 
     post {
         success {
-            echo '✅ Build completed successfully!'
+            echo 'Build completed successfully!'
         }
         failure {
-            echo '❌ Build failed.'
+            echo 'Build failed.'
         }
     }
 }
 ```
+5.  
+6.  
+ 
 
-
-```
 ## Nexus  -Installation (Ubuntu)   
 
 # update package list
@@ -249,3 +256,29 @@ sudo systemctl start nexus
 sudo systemctl status nexus
 
 # Ensure port 9090 is open in firewall
+
+
+
+**Extras:**
+log file location
+run nexus amnually
+sudo journalctl -u nexus.service -f
+sudo -u nexus /opt/nexus/bin/nexus run  ==> run nexus to run maniually
+default pwd : cat /opt/sonatype-work/nexus3/admin.password
+
+
+
+From command line
+
+<settings>
+  <servers>
+    <server>
+      <id>nexus</id>
+      <username>admin</username>
+      <password>admin</password>
+    </server>
+  </servers>
+</settings>
+
+
+mvn deploy:deploy-file  -Dfile=maven-calc-jenkins-1.0-SNAPSHOT.jar   -DgroupId=com.example    -DartifactId=maven-calc-Jenkins    -Dversion=3.3-SNAPSHOT    -Dpackaging=jar    -DgeneratePom=true    -DrepositoryId=nexus  -Durl=http://63.35.231.45:8081/repository/Calc-maven-hosted-repo/
