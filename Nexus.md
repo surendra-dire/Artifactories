@@ -112,7 +112,7 @@ jobs:
 </distributionManagement>
 ```
 2. Manage the settings.xml file for user details [Managed Jenkins --> Managed files --> Add a new config]
-   Note: Install the Config File Provider Plugin for Managed Jenkins.
+   Note: Install the Config File Provider Plugin for Managed Jenkins. Also ensure repository id should match with from distributionManagement.
 ```
    <server>
       <id>my-nexus-snapshot</id>
