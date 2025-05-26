@@ -262,19 +262,9 @@ sudo systemctl status nexus
 
 # Ensure port 9090 is open in firewall
 ```
-
-
-**Extras:**
-log file location
-run nexus amnually
-sudo journalctl -u nexus.service -f
-sudo -u nexus /opt/nexus/bin/nexus run  ==> run nexus to run maniually
-default pwd : cat /opt/sonatype-work/nexus3/admin.password
-
-
-
-From command line
-
+## Manually upload artifacts to Nexus from windows
+**Configure the .m2/settings.xml**
+```
 <settings>
   <servers>
     <server>
@@ -284,6 +274,19 @@ From command line
     </server>
   </servers>
 </settings>
-
-
+```
+**Execute maven deploy**
+```
 mvn deploy:deploy-file  -Dfile=maven-calc-jenkins-1.0-SNAPSHOT.jar   -DgroupId=com.example    -DartifactId=maven-calc-Jenkins    -Dversion=3.3-SNAPSHOT    -Dpackaging=jar    -DgeneratePom=true    -DrepositoryId=nexus  -Durl=http://63.35.231.45:8081/repository/Calc-maven-hosted-repo/
+```
+
+## Additonal notes  
+**log file location:** /opt/nexus/sonatype-work/nexus3/log
+**Default password:** cat /opt/sonatype-work/nexus3/admin.password   
+**Check logs:** sudo journalctl -u nexus.service -f   [or] ps aux | grep nexus  
+**Nexus log file location:**   
+**Run nexus manually** sudo -u nexus /opt/nexus/bin/nexus run    
+
+
+
+
