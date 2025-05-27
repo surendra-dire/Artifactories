@@ -125,7 +125,7 @@ jobs:
       <password>admin</password>
     </server>
 ```
-3. Use Pipeline Syntax --> Select step withMaven: Provide Maven environment. Select maven and settings.xml global file and generate syntax.
+3. Use Pipeline Syntax --> Select step **withMaven: Provide Maven environment**. Select maven and settings.xml global file and generate syntax.
    Add maven deploy.
 ```
 steps {
